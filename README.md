@@ -25,17 +25,24 @@ The diagram describes the intended end-to-end platform: an application pipeline 
 
 The architecture diagram is wider in scope than this repository. The following are **not** created by the Terraform code currently present:
 
-| Component | Status in this repository |
-| --- | --- |
-| GitHub and GitHub Actions | GitHub is the remote source-control platform; no workflow YAML files are present. |
-| Application build, test, SonarQube, Docker, and Trivy stages | Not implemented here. |
-| Amazon ECR | Not provisioned here. |
-| Argo CD installation and Application manifest | Not provisioned here. A standalone Argo CD ingress manifest is included. |
-| AWS Load Balancer Controller | Not installed or configured by Terraform. `iam_policy.json` contains a policy document that may support a separately configured controller. |
-| ACM certificate, DNS record, and load balancer | Not provisioned here. The Argo CD ingress refers to an existing certificate and host. |
-| Amazon CloudWatch configuration | Not provisioned here. |
-| EC2-hosted SonarQube | Not provisioned here. |
-| Slack notifications and Terraform drift automation | Not implemented here. |
+| Component                               | Implementation and Responsibility                                                                                                                                                        |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GitHub and Version Control              | The repository is hosted on GitHub and contains the version-controlled Terraform configuration for AWS infrastructure.                                                                   |
+| GitHub Actions                          | CI/CD workflows for Terraform validation, planning, deployment, and drift detection are not configured in this repository.                                                               |
+| Application Build and Testing           | Maven build, unit tests, Checkstyle, and SonarQube analysis belong to the application CI pipeline.                                                                                       |
+| Containerization and Security Scanning  | Docker image builds and Trivy vulnerability scanning belong to the application CI pipeline.                                                                                              |
+| Amazon ECR                              | Container image registry management belongs to the application delivery infrastructure and is not defined in this Terraform configuration.                                               |
+| Amazon EKS                              | Terraform provisions the EKS control plane and managed worker node group.                                                                                                                |
+| IAM and EBS CSI Driver                  | Terraform configures EKS IAM roles, the OIDC provider, IRSA for the EBS CSI driver, and the EBS CSI EKS add-on.                                                                          |
+| Argo CD                                 | `argocd-ingress.yaml` defines an ingress for an existing Argo CD installation. Installing Argo CD and managing its Application resources are separate tasks.                             |
+| AWS Load Balancer Controller            | The controller is not installed by Terraform. `iam_policy.json` provides a policy document for a separately configured controller.                                                       |
+| ACM, DNS, and Application Load Balancer | The Argo CD ingress references an existing ACM certificate and hostname. Certificate issuance, DNS records, and load balancer lifecycle are not managed by this Terraform configuration. |
+| Amazon CloudWatch                       | CloudWatch logging, metrics, dashboards, and alarms are not configured in the current Terraform code.                                                                                    |
+| SonarQube on EC2                        | The EC2 instance and SonarQube server infrastructure are not defined in this repository.                                                                                                 |
+| Terraform State Management              | Terraform uses an S3 remote backend configured in `backend.tf`. The backend bucket must exist before initialization.                                                                     |
+| Terraform Drift Detection               | Drift can be inspected manually using `terraform plan`. Scheduled detection and automated remediation are not configured.                                                                |
+| Slack Notifications                     | Slack integration for deployment results, Terraform drift, or infrastructure alerts is not configured.                                                                                   |
+
 
 ## Repository responsibilities
 
