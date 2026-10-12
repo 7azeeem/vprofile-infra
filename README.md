@@ -273,8 +273,4 @@ terraform destroy
 ## Related repositories
 
 - Infrastructure: [`7azeeem/vprofile-infra`](https://github.com/7azeeem/vprofile-infra)
-- Application and Helm repository links: not available in the supplied workspace.
-
-## License and contributions
-
-No license file or contribution guide is present in this repository. Add a license and contribution process deliberately if the project is to be shared or accepted from external contributors.
+- Helm repository links:  [`7azeeem/vprofile-helm`](https://github.com/7azeeem/vprofile-helm)
